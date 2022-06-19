@@ -1,0 +1,36 @@
+h2 {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.search-and-review {
+  display: flex;
+  justify-content: space-between;
+}
+
+.learning-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.search-input {
+  display: inline-block;
+  margin-right: 20px;
+}
+
+.search-btn {
+  align-self: center;
+}
+
+.table-and-pagination table {
+  width: 100%;
+}
+
+.index-clm {
+  width: 30%;
+}
+
+.word-clm {
+  width: 50%;
+}

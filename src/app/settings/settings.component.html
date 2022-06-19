@@ -1,0 +1,30 @@
+<h2>What do you want to learn?</h2>
+<form>
+  <div class="input-section">
+    <mat-form-field appearance="fill">
+      <mat-label>Word list</mat-label>
+      <mat-select [(value)]="selectedList" (selectionChange)="onSelectedListChange($event)">
+        <mat-option *ngFor="let wl of wordList" [value]="wl">{{wl}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>From day</mat-label>
+      <mat-select [(value)]="fromDay" [disabled]="!totalDays" (selectionChange)="onFromDayChange($event)">
+        <mat-option *ngFor="let d of fromDays()" [value]="d">Day {{d+1}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>To day</mat-label>
+      <mat-select [(value)]="toDay" [disabled]="fromDay == undefined">
+        <mat-option *ngFor="let d of toDays()" [value]="d">Day {{d+1}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div class="submit-section">
+    <button type="button" mat-raised-button color="primary" (click)="learn()" [disabled]="!selectedList">Learn</button>
+    <button type="button" mat-raised-button color="primary" (click)="review()" [disabled]="!selectedList">Review</button>
+  </div>
+</form>

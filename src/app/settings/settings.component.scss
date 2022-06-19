@@ -1,0 +1,22 @@
+h2 {
+  margin-top: 20px;
+  text-align: center;
+}
+
+form {
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+
+  .input-section {
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    min-height: 215px;
+  }
+
+  .submit-section button {
+    margin: 20px;
+  }
+}
+
