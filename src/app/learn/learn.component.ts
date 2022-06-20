@@ -57,7 +57,6 @@ export class LearnComponent implements OnInit, AfterViewInit {
       next: res => {
         if (res.success) {
           wd.soundUrl = this.wls.buildSoundUrl(res.id)
-          audio.crossOrigin = 'anonymous'
 
           setTimeout(() => {
             audio.play()
