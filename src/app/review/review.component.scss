@@ -1,0 +1,25 @@
+h2 {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.review-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.word-list-table table {
+  min-width: 390px;
+  table {
+    width: 100%;
+  }
+}
+
+.index-clm {
+  width: 30%;
+}
+
+.word-clm {
+  width: 50%;
+}

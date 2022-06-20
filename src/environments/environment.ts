@@ -4,7 +4,8 @@
 
 export const environment = {
   production: false,
-  target: 50
+  target: 50,
+  wordInterval: 5000
 };
 
 /*

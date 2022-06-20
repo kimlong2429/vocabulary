@@ -1,4 +1,4 @@
-<h2>What do you want to learn?</h2>
+<h2>Settings</h2>
 <form>
   <div class="input-section">
     <mat-form-field appearance="fill">
@@ -10,21 +10,21 @@
 
     <mat-form-field appearance="fill">
       <mat-label>From day</mat-label>
-      <mat-select [(value)]="fromDay" [disabled]="!totalDays" (selectionChange)="onFromDayChange($event)">
+      <mat-select [(value)]="selectedFromDay" [disabled]="!totalDays" (selectionChange)="onFromDayChange($event)">
         <mat-option *ngFor="let d of fromDays()" [value]="d">Day {{d+1}}</mat-option>
       </mat-select>
     </mat-form-field>
 
     <mat-form-field appearance="fill">
       <mat-label>To day</mat-label>
-      <mat-select [(value)]="toDay" [disabled]="fromDay == undefined">
+      <mat-select [(value)]="selectedToDay" [disabled]="selectedFromDay == undefined">
         <mat-option *ngFor="let d of toDays()" [value]="d">Day {{d+1}}</mat-option>
       </mat-select>
     </mat-form-field>
   </div>
 
   <div class="submit-section">
-    <button type="button" mat-raised-button color="primary" (click)="learn()" [disabled]="!selectedList">Learn</button>
-    <button type="button" mat-raised-button color="primary" (click)="review()" [disabled]="!selectedList">Review</button>
+    <button type="button" mat-raised-button color="primary" (click)="onClickLearn()" [disabled]="!isWordListAvailable()">Learn</button>
+    <button type="button" mat-raised-button color="primary" (click)="onClickReview()" [disabled]="!isWordListAvailable()">Review</button>
   </div>
 </form>

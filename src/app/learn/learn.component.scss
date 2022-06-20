@@ -24,7 +24,10 @@ h2 {
 }
 
 .table-and-pagination table {
-  width: 100%;
+  min-width: 390px;
+  table {
+    width: 100%;
+  }
 }
 
 .index-clm {

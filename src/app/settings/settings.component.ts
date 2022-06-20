@@ -1,5 +1,3 @@
-import { ArrayDataSource } from '@angular/cdk/collections';
-import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { MatSelectChange } from '@angular/material/select';
 import { Router } from '@angular/router';
@@ -18,16 +16,16 @@ export class SettingsComponent implements OnInit {
   totalDays!: number
 
   selectedList!: string
-  fromDay: number | undefined
-  toDay: number | undefined
+  selectedFromDay: number | undefined
+  selectedToDay: number | undefined
 
   constructor(private wls: WordListService, private router: Router) { }
 
   ngOnInit(): void { }
 
   onSelectedListChange(event: MatSelectChange) {
-    this.fromDay = undefined
-    this.toDay = undefined
+    this.selectedFromDay = undefined
+    this.selectedToDay = undefined
 
     let url
 
@@ -53,7 +51,7 @@ export class SettingsComponent implements OnInit {
   }
 
   onFromDayChange(event: any) {
-    this.toDay = undefined
+    this.selectedToDay = undefined
   }
 
   fromDays(): number[] {
@@ -61,25 +59,35 @@ export class SettingsComponent implements OnInit {
   }
 
   toDays(): number[] {
-    return Array.from({length: this.totalDays - this.fromDay!!}, (v, k) => k + this.fromDay!!)
+    return Array.from({length: this.totalDays - this.selectedFromDay!!}, (v, k) => k + this.selectedFromDay!!)
   }
 
-  async learn() {
-    let params: any = {
-      'wordList': this.selectedList
-    }
-
-    if (this.fromDay != undefined) {
-      params['fromDay'] = this.fromDay
-    }
-    if (this.toDay != undefined) {
-      params['toDay'] = this.toDay
-    }
-
-    await this.router.navigate(['/learn', params])
+  isWordListAvailable(): boolean {
+    return !!this.selectedList && !!this.wls.words
   }
 
-  async review() {
+  async onClickLearn() {
+    this.buildSelectedWords()
+    await this.router.navigate(['/learn'])
+  }
 
+  private buildSelectedWords() {
+    // set default value
+    let fromDay = 0
+    let toDay = Math.ceil(this.wls.words.length / environment.target)
+
+    if (this.selectedFromDay != undefined) {
+      fromDay = this.selectedFromDay
+    }
+    if (this.selectedToDay != undefined) {
+      toDay = this.selectedToDay
+    }
+
+    this.wls.buildSelectedWords(fromDay, toDay)
+  }
+
+  async onClickReview() {
+    this.buildSelectedWords()
+    await this.router.navigate(['/review'])
   }
 }

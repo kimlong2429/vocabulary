@@ -1,4 +1,4 @@
-<h2>{{wordList}}</h2>
+<h2>Learning</h2>
 
 <div class="learning-area">
   <div>
@@ -9,7 +9,7 @@
           <input matInput (keyup)="applyFilter($event)" #input>
         </mat-form-field>
       </div>
-      <button type="button" class="search-btn" mat-stroked-button color="primary">Review</button>
+      <button type="button" class="search-btn" mat-stroked-button color="primary" (click)="onClickReview()">Review</button>
     </div>
 
     <div class="table-and-pagination mat-elevation-z8">

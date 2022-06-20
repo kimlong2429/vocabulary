@@ -1,1 +1,34 @@
-<p>review works!</p>
+<h2>Review</h2>
+
+<div class="review-area">
+  <div class="word-list-table mat-elevation-z8">
+    <table mat-table [dataSource]="dataSource" matSort>
+
+      <ng-container matColumnDef="index">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header [ngClass]="'index-clm'"> Index </th>
+        <td mat-cell *matCellDef="let row" [ngClass]="'index-clm'"> {{row.index}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="word">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header [ngClass]="'word-clm'"> Word </th>
+        <td mat-cell *matCellDef="let row" [ngClass]="'word-clm'">
+          <input matInput class="hide-text-input" disabled [type]="'password'" [value]="row.word" *ngIf="isLastRow(row)">
+          <span *ngIf="!isLastRow(row)">{{row.word}}</span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="sounds">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Sounds </th>
+        <td mat-cell *matCellDef="let row">
+          <audio [src]="row.soundUrl" #audio [autoplay]="isLastRow(row)"></audio>
+          <button mat-icon-button color="primary" aria-label="" (click)="soundOfText(row, audio)">
+            <mat-icon>volume_up</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </div>
+</div>
