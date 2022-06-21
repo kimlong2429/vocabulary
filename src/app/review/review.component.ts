@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { concatAll, delay, map, Observable, Subject, Subscription } from 'rxjs';
+import { concatAll, delay, map, mergeMap, Observable, of, Subject, Subscription } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { WordData, WordListService } from '../services/word-list.service';
 
@@ -17,7 +17,7 @@ export class ReviewComponent implements OnInit, OnDestroy {
 
   words: WordData[] = []
 
-  private randomStream: Subject<number> = new Subject()
+  private wordStream: Subject<WordData> = new Subject()
   private subscription!: Subscription
 
   constructor(private wls: WordListService, private router: Router) { }
@@ -34,24 +34,40 @@ export class ReviewComponent implements OnInit, OnDestroy {
 
   private randomize() {
     let subject = this.dataSource.connect()
+    let shuffledWords: WordData[] = this.shuffle(this.wls.selectedWords)
 
-    this.subscription = this.randomStream.pipe(
-      map(index => this.loadSoundOfText(index)),
-      concatAll(),
+    this.wordStream.pipe(
+      mergeMap(wd => this.loadSoundOfText(wd)),
       map(wd => this.renderRows(wd, subject)),
       delay(environment.wordInterval),
       map(wd => {
-        let index = this.randomIndex()
-        this.randomStream.next(index)
+        if (shuffledWords.length == 0) {
+          shuffledWords = this.shuffle(this.wls.selectedWords)
+        }
+
+        let nextWord = shuffledWords.shift()
+        this.wordStream.next(nextWord!!)
+
         return wd
       })
     ).subscribe({
       next: wd => console.log(wd)
     })
 
-    // random first word
-    let index = this.randomIndex()
-    this.randomStream.next(index)
+    this.wordStream.next(shuffledWords.shift()!!)
+  }
+
+  private shuffle(origin: any[]): any[] {
+    let array = [...origin]
+
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      const temp = array[i];
+      array[i] = array[j];
+      array[j] = temp;
+    }
+
+    return array
   }
 
   ngOnDestroy(): void {
@@ -60,11 +76,7 @@ export class ReviewComponent implements OnInit, OnDestroy {
     }
 
     this.dataSource?.disconnect()
-    this.randomStream.complete()
-  }
-
-  private randomIndex() {
-    return Math.floor(Math.random()*this.wls.selectedWords.length)
+    this.wordStream.complete()
   }
 
   private renderRows(wd: WordData, subject: Subject<WordData[]>): WordData {
@@ -78,8 +90,7 @@ export class ReviewComponent implements OnInit, OnDestroy {
     return wd
   }
 
-  private loadSoundOfText(index: number): Observable<WordData> {
-    let wd = this.wls.selectedWords[index]
+  private loadSoundOfText(wd: WordData): Observable<WordData> {
     return this.wls.soundOfText(wd.word).pipe(
       map(res => {
         if (res.success) {
