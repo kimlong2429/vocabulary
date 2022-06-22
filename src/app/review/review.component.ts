@@ -16,6 +16,8 @@ export class ReviewComponent implements OnInit, OnDestroy {
   dataSource!: MatTableDataSource<WordData>;
 
   words: WordData[] = []
+  total!: number
+  counter: number = 0
 
   private wordStream: Subject<WordData> = new Subject()
   private subscription!: Subscription
@@ -28,6 +30,7 @@ export class ReviewComponent implements OnInit, OnDestroy {
       return
     }
 
+    this.total = this.wls.selectedWords.length
     this.dataSource = new MatTableDataSource(this.words)
     this.randomize()
   }
@@ -87,6 +90,7 @@ export class ReviewComponent implements OnInit, OnDestroy {
     this.words.push(wd)
     subject.next(this.words)
 
+    this.counter += 1
     return wd
   }
 
