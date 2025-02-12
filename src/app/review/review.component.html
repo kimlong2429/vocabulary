@@ -20,7 +20,7 @@
       <ng-container matColumnDef="sounds">
         <th mat-header-cell *matHeaderCellDef mat-sort-header> Sounds </th>
         <td mat-cell *matCellDef="let row">
-          <audio [src]="row.soundUrl" #audio [autoplay]="isLastRow(row)"></audio>
+          <audio [src]="row.soundUrls ? row.soundUrls[row.soundIndex] : ''" #audio [autoplay]="isLastRow(row)" (error)="handlePlayError(row, audio)"></audio>
           <button mat-icon-button color="primary" aria-label="" (click)="soundOfText(row, audio)">
             <mat-icon>volume_up</mat-icon>
           </button>
