@@ -4,6 +4,7 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { WordData, WordListService } from '../services/word-list.service';
+import { from } from 'rxjs';
 
 @Component({
   selector: 'app-learn',
@@ -48,15 +49,15 @@ export class LearnComponent implements OnInit, AfterViewInit {
   }
 
   soundOfText(wd: WordData, audio: HTMLAudioElement) {
-    if (wd.soundUrl) {
+    if (wd.soundUrls) {
       audio.play()
       return
     }
 
     this.wls.soundOfText(wd.word).subscribe({
       next: res => {
-        if (res.success) {
-          wd.soundUrl = this.wls.buildSoundUrl(res.id)
+        if (res) {
+          wd.soundUrls = res
 
           setTimeout(() => {
             audio.play()
@@ -64,6 +65,20 @@ export class LearnComponent implements OnInit, AfterViewInit {
         }
       }
     })
+  }
+
+  handlePlayError(wd: WordData, audio: HTMLAudioElement) {
+    if (!wd.soundUrls) return
+
+    console.log(`play error`)
+
+    if (wd.soundIndex < wd.soundUrls.length) {
+      wd.soundIndex++
+    }
+
+    setTimeout(() => {
+      audio.play()
+    }, 0);
   }
 
   async onClickReview() {

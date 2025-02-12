@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, tap } from 'rxjs';
+import { map, Observable, of, tap } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -9,6 +9,7 @@ import { environment } from 'src/environments/environment';
 export class WordListService {
   words!: WordData[]
   selectedWords!: WordData[]
+  sounds?: {[key: string]: string[]}
 
   constructor(private http: HttpClient) { }
 
@@ -18,7 +19,8 @@ export class WordListService {
         this.words = res.map((w, index) => {
           const word: WordData = {
             index: index + 1,
-            word: w
+            word: w,
+            soundIndex: 0
           }
           return word
         })
@@ -26,15 +28,17 @@ export class WordListService {
     )
   }
 
-  soundOfText(word: string): Observable<SoundOfTextResponse> {
-    return this.http.post<SoundOfTextResponse>('https://api.soundoftext.com/sounds',
-      {
-        engine: "Google",
-        data: {
-          text: word,
-          voice: "en-US"
-        }
+  soundOfText(word: string): Observable<string[]> {
+    if (this.sounds) {
+      return of(this.sounds[word])
+    }
+
+    return this.http.get<{[key: string]: string[]}>('/assets/data/ultimate.json').pipe(
+      map(sounds => {
+        this.sounds = sounds
+        return this.sounds[word]
       })
+    )
   }
 
   buildSelectedWords(fromDay: number, toDay: number): WordData[] {
@@ -52,9 +56,6 @@ export class WordListService {
     return this.selectedWords
   }
 
-  buildSoundUrl(sid: string): string {
-    return `https://storage.soundoftext.com/${sid}.mp3`
-  }
 }
 
 export interface SoundOfTextResponse {
@@ -65,5 +66,6 @@ export interface SoundOfTextResponse {
 export interface WordData {
   index: number
   word: string
-  soundUrl?: string
+  soundUrls?: string[]
+  soundIndex: number
 }
