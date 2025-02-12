@@ -97,8 +97,8 @@ export class ReviewComponent implements OnInit, OnDestroy {
   private loadSoundOfText(wd: WordData): Observable<WordData> {
     return this.wls.soundOfText(wd.word).pipe(
       map(res => {
-        if (res.success) {
-          wd.soundUrl = this.wls.buildSoundUrl(res.id)
+        if (res) {
+          wd.soundUrls = res
         }
 
         return wd
@@ -107,15 +107,15 @@ export class ReviewComponent implements OnInit, OnDestroy {
   }
 
   soundOfText(wd: WordData, audio: HTMLAudioElement) {
-    if (wd.soundUrl) {
+    if (wd.soundUrls) {
       audio.play()
       return
     }
 
     this.wls.soundOfText(wd.word).subscribe({
       next: res => {
-        if (res.success) {
-          wd.soundUrl = `https://storage.soundoftext.com/${res.id}.mp3`
+        if (res) {
+          wd.soundUrls = res
           audio.crossOrigin = 'anonymous'
 
           setTimeout(() => {
@@ -128,5 +128,19 @@ export class ReviewComponent implements OnInit, OnDestroy {
 
   isLastRow(wb: WordData) {
     return this.words.indexOf(wb) == this.words.length - 1
+  }
+
+  handlePlayError(wd: WordData, audio: HTMLAudioElement) {
+    if (!wd.soundUrls) return
+
+    console.log(`play error`)
+
+    if (wd.soundIndex < wd.soundUrls.length) {
+      wd.soundIndex++
+    }
+
+    setTimeout(() => {
+      audio.play()
+    }, 0);
   }
 }
