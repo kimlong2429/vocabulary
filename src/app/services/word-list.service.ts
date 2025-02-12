@@ -33,7 +33,7 @@ export class WordListService {
       return of(this.sounds[word])
     }
 
-    return this.http.get<{[key: string]: string[]}>('/assets/data/ultimate.json').pipe(
+    return this.http.get<{[key: string]: string[]}>('assets/data/ultimate.json').pipe(
       map(sounds => {
         this.sounds = sounds
         return this.sounds[word]
